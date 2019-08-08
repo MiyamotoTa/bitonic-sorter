@@ -32,3 +32,32 @@ fn compare_and_swap(x: &mut [u32], up: bool) {
         }
     }
 }
+
+// このモジュールは cargo test を実行したときのみコンパイルされる
+#[cfg(test)]
+mod tests {
+    // 親モジュール(first)のsort関数を利用する
+    use super::sort;
+
+    // #[test]のついた関数は cargo test 時のみ実行される
+    #[test]
+    fn sort_u32_ascending() {
+        // テストデータとしてu32型のベクタを作成しxに束縛する
+        // sort関数によって内容が更新されるのでミュータブル
+        let mut x = vec![10, 30, 11, 20, 4, 330, 21, 110];
+
+        // xのスライスを作成し、sort関数を呼び出す
+        // &mut xは&mut x[..]と書いてもいい
+        sort(&mut x, true);
+
+        assert_eq!(x, vec![4, 10, 11, 20, 21, 30, 110, 330]);
+    }
+
+    #[test]
+    fn sort_u32_descending() {
+        let mut x = vec![10, 30, 11, 20, 4, 330, 21, 110];
+        sort(&mut x, false);
+
+        assert_eq!(x, vec![330, 110, 30, 21, 20, 11, 10, 4]);
+    }
+}
